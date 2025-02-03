@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-        DB_URI = credentials('db-username')
-        DB_PASSWORD = credentials('db-password')
+        DB_URI = credentials('DB_URI')
+        SPRING_PROFILES_ACTIVE = credentials('SPRING_PROFILES_ACTIVE')
     }
     stages {
         stage('Build') {
