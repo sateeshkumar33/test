@@ -3,6 +3,7 @@ pipeline {
     environment {
         DB_URI = credentials('DB_URI')
         SPRING_PROFILES_ACTIVE = credentials('SPRING_PROFILES_ACTIVE')
+        DOCKER_REGISTRY_CREDENTIALS = credentials('DOCKER_REGISTRY_CREDENTIALS')
     }
     stages {
         stage('Build') {
@@ -17,5 +18,19 @@ pipeline {
                 archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
         }
+        stage('Build Docker Image') {
+                    steps {
+                        script {
+                            def buildNumber = env.BUILD_NUMBER
+                            def imageName = "your-docker-image-name:${buildNumber}"
+
+                            sh """
+                                docker build -t ${imageName} .
+                                docker login -u ${DOCKER_REGISTRY_CREDENTIALS_USR} -p ${DOCKER_REGISTRY_CREDENTIALS_PSW}
+                                docker push ${imageName}
+                            """
+                        }
+                    }
+                }
     }
 }
