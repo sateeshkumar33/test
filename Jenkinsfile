@@ -3,7 +3,6 @@ pipeline {
     environment {
         DB_URI = credentials('DB_URI')
         SPRING_PROFILES_ACTIVE = credentials('SPRING_PROFILES_ACTIVE')
-        DOCKER_REGISTRY_CREDENTIALS = credentials('DOCKER_REGISTRY_CREDENTIALS')
     }
     stages {
         stage('Build') {
@@ -22,13 +21,21 @@ pipeline {
                     steps {
                         script {
                             def buildNumber = env.BUILD_NUMBER
-                            def imageName = "your-docker-image-name:${buildNumber}"
+                            def imageName = "demo-image:${buildNumber}"
+                            echo "🔹 BUILD_NUMBER: ${buildNumber}"   // Print build number
+                            echo "🔹 Docker Image Name: ${imageName}" // Print image name
 
-                            sh """
-                                docker build -t ${imageName} .
-                                docker login -u ${DOCKER_REGISTRY_CREDENTIALS_USR} -p ${DOCKER_REGISTRY_CREDENTIALS_PSW}
-                                docker push ${imageName}
-                            """
+                            withCredentials([usernamePassword(credentialsId: 'DOCKER_REGISTRY_CREDENTIALS',
+                                                                          usernameVariable: 'DOCKER_USER',
+                                                                          passwordVariable: 'DOCKER_PASS')]) {
+                                            sh """
+                                                docker build -t ${imageName} .  # Build with new changes
+                                                docker tag ${imageName} demo-image:latest  # Optional: Update latest tag
+                                                echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin
+                                                docker push ${imageName}  # Push new build
+                                                docker push demo-image:latest  # Push latest tag
+                                            """
+                            }
                         }
                     }
                 }
