@@ -21,7 +21,7 @@ pipeline {
                     steps {
                         script {
                             def buildNumber = env.BUILD_NUMBER
-                            def imageName = "demo-image:${buildNumber}"
+                            def imageName = "sateesh6303/demo-image:${buildNumber}"
                             echo "🔹 BUILD_NUMBER: ${buildNumber}"   // Print build number
                             echo "🔹 Docker Image Name: ${imageName}" // Print image name
 
