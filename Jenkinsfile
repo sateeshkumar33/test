@@ -33,7 +33,7 @@ pipeline {
                                                 docker tag ${imageName} demo-image:latest  # Optional: Update latest tag
                                                 echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin
                                                 docker push ${imageName}  # Push new build
-                                                docker push demo-image:latest  # Push latest tag
+                                                docker push sateesh6303/demo_image:latest  # Push latest tag
                                             """
                             }
                         }
