@@ -30,10 +30,10 @@ pipeline {
                                                                           passwordVariable: 'DOCKER_PASS')]) {
                                             sh """
                                                 docker build -t ${imageName} .  # Build with new changes
-                                                docker tag ${imageName} sateesh6303/demo_image:latest  # Optional: Update latest tag
+                                                docker tag ${imageName} sateesh6303/demo-image:latest  # Optional: Update latest tag
                                                 echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin
                                                 docker push ${imageName}  # Push new build
-                                                docker push sateesh6303/demo_image:latest  # Push latest tag
+                                                docker push sateesh6303/demo-image:latest  # Push latest tag
                                             """
                             }
                         }
